@@ -27,22 +27,55 @@
             <h1 class="md-typescale-headline-medium">
                 My Flight Schedule
             </h1></div>
-        
+        <!-- ログインボタン -->
         <div class="inputbar">
 
             <md-tabs style="flex-grow: 1;">
-                <md-secondary-tab>
+                <md-secondary-tab data-tab-id="upcoming">
                   <md-icon slot="icon">flight_takeoff</md-icon>
                   Upcoming
                 </md-secondary-tab>
-                <md-secondary-tab>
+                <md-secondary-tab data-tab-id="allflights">
                   <md-icon slot="icon">list</md-icon>
                   All Flights
                 </md-secondary-tab>
               </md-tabs>
         </div>
-        <div class="content">
+        <div class="tab-container">
 
+        
+          <div class="content active" id="upcoming">
+            
+            <!-- Upcoming -->
+            <!-- ログインしてください画面 -->
+            <!-- Firebase Databaseから flights dataを取得-->
+            <!-- 一番新しいものを-->
+            <!-- Amadeusからフライト情報を取得-->
+            <!-- Contents Placeholder効果-->
+          </div>
+          <div class="content next" id="flightlist">
+            test2
+            <!-- Flight list -->
+            <!-- ログインしてください画面 -->
+            <!-- Firebase Databaseから flights dataを取得-->
+            <!-- データをカードに変換-->
+            <!-- Amadeusからフライト情報を取得-->
+            <!-- Contents Placeholder効果-->
+          </div><!-- コメント -->
+          <div class="content" id="newflight">
+            <!-- modal式？Dialog? -->
+            <md-dialog>
+              <div slot="headline">
+                Dialog title
+              </div>
+              <form slot="content" id="form-id" method="dialog">
+                A simple dialog with free-form content.
+              </form>
+              <div slot="actions">
+                <md-text-button form="form-id">Ok</md-text-button>
+              </div>
+            </md-dialog>
+          </div>
         </div>
         <div class="fabs"><md-fab aria-label="Edit">
             <md-icon slot="icon">add</md-icon>
@@ -52,3 +85,36 @@
 
 
   </body>
+  <!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- JQuery -->
+  <script>
+    $(document).ready(function(){
+      var currentTab = 0;
+      var $tabs = $(".content");
+      $tabs.eq(currentTab).addClass("active");
+
+      function switchtab(newTab) {
+        if (newTab === currentTab){
+          return;
+        }
+        if (newTab < currentTab) {//leftTab
+          $tabs.eq(currentTab).removeClass("active").addClass("next");
+          $tabs.eq(newTab).removeClass("prev").addClass("active");
+
+        } else {//rightTab
+          $tabs.eq(currentTab).removeClass("active").addClass("prev");
+          $tabs.eq(newTab).removeClass("next").addClass("active");
+        }
+        currentTab = newTab;
+        
+      }
+
+      $("md-secondary-tab").on("click", function(){
+        var newTab = $(this).index();
+        switchtab(newTab);
+      })
+    });
+
+
+  </script>
