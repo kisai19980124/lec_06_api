@@ -42,10 +42,11 @@
               </md-tabs>
         </div>
         <div class="tab-container">
-
+          
         
-          <div class="content active" id="upcoming">
-            <div class="card">
+          <div class="content" id="upcoming">
+            aaa
+            <div class="card delayed">
               <div class="airtoair">
                 <div class="threeletter">SYD</div>
                 <div class="interairportline">-</div>
@@ -54,7 +55,7 @@
               <div class="detailcontents">
                 <div class="airportdetail">
                   <div class="airportdate">
-                    <p>シドニー 8月24日(金)</p>
+                    シドニー 8月24日(金)
                   </div>
                   <div class="otherdetails">
                     <div style="flex-grow: 3;">
@@ -74,7 +75,7 @@
                 <div class="divline"> </div>
                 <div class="airportdetail">
                   <div class="airportdate">
-                    <p>羽田 8月24日(金)</p>
+                    羽田 8月24日(金)
                   </div>
                   <div class="otherdetails">
                     <div style="flex-grow: 2;">
@@ -92,7 +93,7 @@
                   </div>
                 </div>
               </div>
-              <div></div>
+              <div class="flightstatus">定刻</div>
             </div>
             <!-- Upcoming -->
             <!-- ログインしてください画面 -->
@@ -155,6 +156,11 @@
           $tabs.eq(currentTab).removeClass("active").addClass("prev");
           $tabs.eq(newTab).removeClass("next").addClass("active");
         }
+        setTimeout(function() {
+            $tabs.eq(currentTab).removeClass("next prev");
+        }, 500);setTimeout(function() {
+            $tabs.eq(currentTab).removeClass("next prev");
+        }, 500);
         currentTab = newTab;
         
       }

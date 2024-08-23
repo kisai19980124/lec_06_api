@@ -124,14 +124,14 @@ body{
     flex-basis: 60px;
     padding: 0px 0px;
     flex-shrink: 0;
-    background-color: var(--md-sys-color-primary);
-    color: #FFF;
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
     font-weight: bold;
     z-index: 10;
     text-align: center;
     justify-content: center;
     align-items: center;
-    
+    user-select: none;
 }
 
 .chatroom_name{
@@ -141,8 +141,11 @@ body{
     text-wrap: nowrap;
     user-select: none;
 }
-
+/*
 .content{
+    position: relative;
+    top: 0px;
+    left: 0px;
     display: flex;
     flex-basis: 1;
     padding: 0px;
@@ -152,7 +155,7 @@ body{
     overflow-y: auto;
     background-color: #FFF;
     
-}
+}*/
 .inputbar{
     display: flex;
 
@@ -183,19 +186,26 @@ body{
     height: auto;
     width: 100%;
     overflow: hidden;
-    
+    background-color: var(--md-sys-color-background);
 }
 .content{
-    
+    display: flex;
+    flex-direction: column;
     position: absolute;
-    top: 0;
-    left: 100%;
+    
     width: 100%;
+    height: auto;
+    box-sizing: border-box;
     transform: translateX(0);
     transition: transform 0.5s ease;
-    opacity: 0;
+    opacity: 1;
     align-items: center;
-    justify-content: center;
+    text-align: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-y: auto;
+    overflow-x: hidden;
+
     
 }
 
@@ -213,6 +223,12 @@ body{
     transform: translateX(100%);
 }
 
+.content.prev, .content.next {
+    transition: transform 0.5s ease, opacity 0.5s ease 0.5s; /* Add a delay to opacity */
+    opacity: 0; /* Fade out after sliding */
+    pointer-events: none; /* Disable interactions while sliding out */
+}
+
 
 .card {
     display: flex;
@@ -224,7 +240,8 @@ body{
     margin: 24px;
     padding: 24px;
     width: 100%;
-    border: #616161 solid 1px;
+    border: #616161 solid 0px;
+    background-color: var(--md-sys-color-surface-container-highest);
     border-radius: var(--md-sys-shape-corner-medium);
     max-width: 600px;
 
@@ -234,7 +251,7 @@ body{
     display: block;
     text-align: center;
     width: fit-content;
-    padding: 12px;
+    padding: 6px 12px;
     line-height: 52px;
     overflow: hidden;
     font-size: 36px;
@@ -272,7 +289,7 @@ body{
     text-align: left;
     flex-wrap: nowrap;
     flex-grow: 1;
-    padding: 12px;
+    padding: 6px 12px;
 }
 
 .num{
@@ -281,17 +298,25 @@ body{
     font-size: 24px;
     color: black;
 }
+.num.onschedule{
+
+    color: rgb(129, 201, 149);
+}
+.num.delayed{
+
+    color: var(--md-sys-color-on-error);
+}
 
 .divline{
     display: block;
     background-color: gray;
     width: 1px;
-    height: 100%;
+    margin-right: 12px;
     align-self: stretch;
 }
 
 .airportdate{
-
+    margin: 0 0 12px 0;
 }
 
 .otherdetails{
@@ -300,4 +325,26 @@ body{
     flex-wrap: nowrap;
     font-size: 14px;
     color: var(--md-sys-color-secondary);
+}
+
+.flightstatus{
+    align-self: flex-start;
+    margin: 12px;
+    padding: 1px 6px;
+    border: black solid 1px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-sizing: border-box;
+    font-size: 11px;
+    
+}
+
+.flightstatus.onschedule{
+    color: rgb(129, 201, 149);
+    border-color: rgb(129, 201, 149);
+}
+
+.flightstatus.delayed{
+    color: var(--md-sys-color-on-error);
+    border-color: var(--md-sys-color-on-error);
 }
