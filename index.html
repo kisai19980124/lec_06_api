@@ -45,7 +45,6 @@
           
         
           <div class="content" id="upcoming">
-            aaa
             <div class="card delayed">
               <div class="airtoair">
                 <div class="threeletter">SYD</div>
@@ -93,7 +92,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flightstatus">定刻</div>
+              <div class="flightstatus onschedule">定刻</div>
             </div>
             <!-- Upcoming -->
             <!-- ログインしてください画面 -->
@@ -102,17 +101,17 @@
             <!-- Amadeusからフライト情報を取得-->
             <!-- Contents Placeholder効果-->
           </div>
-          <div class="content next" id="flightlist">
-            test2
-            <!-- Flight list -->
-            <!-- <template>で-->
+          <div class="content next" id="flightlist"> 
+            <!-- ここにカードが入る-->  
             <!-- ログインしてください画面 -->
             <!-- Firebase Databaseから flights dataを取得-->
             <!-- データをカードに変換-->
             <!-- Amadeusからフライト情報を取得-->
             <!-- Contents Placeholder効果-->
           </div><!-- コメント -->
-          <div class="content" id="newflight">
+          
+          
+          <div class="content" id="newflight" style="display: none;">
             <!-- modal式？Dialog? -->
             <md-dialog>
               <div slot="headline">
@@ -127,7 +126,7 @@
             </md-dialog>
           </div>
         </div>
-        <div class="fabs"><md-fab aria-label="Edit">
+        <div class="fabs" ><md-fab aria-label="Edit" id="add">
             <md-icon slot="icon">add</md-icon>
           </md-fab></div>
     </div>
@@ -138,12 +137,16 @@
   <!-- JQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <!-- JQuery -->
-  <script>
+  <script type="module">
+
+
     $(document).ready(function(){
       var currentTab = 0;
       var $tabs = $(".content");
-      $tabs.eq(currentTab).addClass("active");
+      
 
+      $tabs.eq(currentTab).addClass("active");
+      //anchorEl.addEventListener('click', () => { menuEl.open = !menuEl.open; });
       function switchtab(newTab) {
         if (newTab === currentTab){
           return;
@@ -163,12 +166,82 @@
         }, 500);
         currentTab = newTab;
         
-      }
+      };
+      function createCard(id, fromAirport, toAirport, fromDate, toDate) {
+        return `
+          <div class="card" style="padding: 12px;" id="${id}">
+            <div class="cardwrapper">
+              <div class="cardmain">
+                <div class="airtoair">
+                  <div class="threeletter">${fromAirport}</div>
+                  <div class="interairportline">
+                    <md-linear-progress value="0.5" style="flex-grow: 1;"></md-linear-progress>
+                  </div>
+                  <div class="threeletter">${toAirport}</div>
+                </div>
+                <div class="detailcontents">
+                  <div class="airportdetail">
+                    <div class="airportdate" style="margin: 0;">
+                      ${fromDate}
+                    </div>
+                  </div>
+                  <div class="airportdetail">
+                    <div class="airportdate" style="margin: 0;">
+                      ${toDate}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cardmenu">
+                <md-icon-button id="usage-anchor">
+                  <md-icon>more_vert</md-icon>
+                </md-icon-button>
+                <md-menu id="usage-menu" anchor="usage-anchor">
+                  <md-menu-item>
+                    <div slot="headline" id="edit">Edit</div>
+                  </md-menu-item>
+                  <md-menu-item>
+                    <div slot="headline" id="delete">Delete</div>
+                  </md-menu-item>
+                </md-menu>
+              </div>
+            </div>
+          </div>
+        `;
+      };
 
       $("md-secondary-tab").on("click", function(){
         var newTab = $(this).index();
         switchtab(newTab);
       })
+      //Firebaseからデータ取得
+      //カードを作る
+      //時間を計算
+      //次のフライトはUpcomingに追加
+      const card1HTML = createCard("123","SYD", "HND", "シドニー 8月24日(金) 8:30", "羽田 8月24日(金) 17:30");
+      $('#flightlist').append(card1HTML);
+      const card2HTML = createCard("456","LAX", "JFK", "ロサンゼルス 8月25日(土) 9:00", "ニューヨーク 8月25日(土) 17:00");
+      $('#flightlist').append(card2HTML);
+      $('#flightlist').on('click', '#usage-anchor', function() {
+        
+        const anchorEl = $(this);
+        const menuEl = anchorEl.siblings('md-menu');
+        console.log(menuEl.attr("open"));
+        menuEl.attr('open', menuEl.attr('open') === 'true' ? 'false' : 'true');
+      });
+      $('#flightlist').on("click", "#edit", function(){
+        console.log("edit");
+        const cardDiv = $(this).closest('.card');
+        const cardId = cardDiv.attr('id'); //
+        console.log('Card ID:', cardId);
+      });
+      //Delete
+      $("md-fab").on("click",function () {
+        console.log("add");
+        
+      })
+
+      
     });
 
 

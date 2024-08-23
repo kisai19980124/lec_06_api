@@ -121,7 +121,7 @@ body{
 .banner{
     display: flex;
     flex-direction: row;
-    flex-basis: 60px;
+    flex-basis: 96;
     padding: 0px 0px;
     flex-shrink: 0;
     background-color: var(--md-sys-color-surface);
@@ -141,21 +141,7 @@ body{
     text-wrap: nowrap;
     user-select: none;
 }
-/*
-.content{
-    position: relative;
-    top: 0px;
-    left: 0px;
-    display: flex;
-    flex-basis: 1;
-    padding: 0px;
-    height: auto;
-    width: 100%;
-    flex-grow: 1;
-    overflow-y: auto;
-    background-color: #FFF;
-    
-}*/
+
 .inputbar{
     display: flex;
 
@@ -187,6 +173,7 @@ body{
     width: 100%;
     overflow: hidden;
     background-color: var(--md-sys-color-background);
+    overflow-y: auto;
 }
 .content{
     display: flex;
@@ -194,7 +181,7 @@ body{
     position: absolute;
     
     width: 100%;
-    height: auto;
+    height: 100%;
     box-sizing: border-box;
     transform: translateX(0);
     transition: transform 0.5s ease;
@@ -232,19 +219,70 @@ body{
 
 .card {
     display: flex;
+    position: relative;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
     text-align: center;
     flex-direction: column;
-    margin: 24px;
-    padding: 24px;
+    margin: 12px;
+    padding: 18px;
     width: 100%;
-    border: #616161 solid 0px;
-    background-color: var(--md-sys-color-surface-container-highest);
+    border: var(--md-sys-color-outline-variant) solid 1px;
+    background-color: var(--md-sys-color-surface);
     border-radius: var(--md-sys-shape-corner-medium);
     max-width: 600px;
+    overflow: visible;
+}
 
+.cardwrapper{
+    display: flex;
+    position: relative;
+    flex-wrap: nowrap;
+    
+    justify-content:center;
+    flex-direction: row;
+    width: 100%;
+
+}
+.cardmenu{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    width: 40px;
+    overflow: visible;
+}
+.cardmain{
+    display: flex;
+    position: relative;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    width: 100%;
+    
+}
+.cardtop{
+    display: flex;
+    position: relative;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    justify-items: flex-end;
+    width: 100%;
+    padding: 0 12px;
+}
+.cardbutton{
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
 }
 
 .threeletter{
@@ -264,6 +302,7 @@ body{
     flex-grow: 1;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 .airtoair{
     display: flex;
@@ -300,11 +339,11 @@ body{
 }
 .num.onschedule{
 
-    color: rgb(129, 201, 149);
+    color: #188038;
 }
 .num.delayed{
 
-    color: var(--md-sys-color-on-error);
+    color: var(--md-sys-color-error);
 }
 
 .divline{
@@ -340,11 +379,11 @@ body{
 }
 
 .flightstatus.onschedule{
-    color: rgb(129, 201, 149);
-    border-color: rgb(129, 201, 149);
+    color: #188038;
+    border-color: #188038;
 }
 
 .flightstatus.delayed{
-    color: var(--md-sys-color-on-error);
-    border-color: var(--md-sys-color-on-error);
+    color: var(--md-sys-color-error);
+    border-color: var(--md-sys-color-error);
 }
