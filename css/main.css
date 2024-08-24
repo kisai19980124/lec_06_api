@@ -233,8 +233,14 @@ body{
     border-radius: var(--md-sys-shape-corner-medium);
     max-width: 600px;
     overflow: visible;
+    opacity: 1;
+    transition: transform 0.5s ease;
 }
-
+.card.removing{
+    translate: 0 -100%;
+    /*margin-top: -100%;*/
+    /*opacity: 0;
+    */}
 .cardwrapper{
     display: flex;
     position: relative;

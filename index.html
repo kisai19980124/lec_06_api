@@ -22,7 +22,36 @@
 
 
   <body>
-    <div class="window">
+
+<!-- コンテンツ表示画面 -->
+    <div class="modal" id="namesetting" style="display: none;">
+    </div>
+    <md-dialog id="newflight">
+      <!--closingする際はしないようにしたい-->
+      <div slot="headline">
+        Dialog title
+      </div>
+      <form slot="content" id="form-id" method="dialog">
+        A simple dialog with free-form content.
+      </form>
+      <div slot="actions">
+        <md-text-button form="form-id">Ok</md-text-button>
+      </div>
+    </md-dialog>
+    
+    <md-dialog id="delete">
+      <div slot="headline">
+        Confirm delete
+      </div>
+      <form slot="content" id="deleteform" method="dialog">
+        Are you sure you want to delete this flight?
+      </form>
+      <div slot="actions">
+        <md-text-button form="deleteform" value="cancel">Cancel</md-text-button>
+        <md-text-button form="deleteform" value="delete">Ok</md-text-button>
+      </div>
+    </md-dialog>
+      <div class="window">
         <div class="banner">
             <h1 class="md-typescale-headline-medium">
                 My Flight Schedule
@@ -108,22 +137,11 @@
             <!-- データをカードに変換-->
             <!-- Amadeusからフライト情報を取得-->
             <!-- Contents Placeholder効果-->
-          </div><!-- コメント -->
-          
+          </div><!-- コメント -->   
           
           <div class="content" id="newflight" style="display: none;">
             <!-- modal式？Dialog? -->
-            <md-dialog>
-              <div slot="headline">
-                Dialog title
-              </div>
-              <form slot="content" id="form-id" method="dialog">
-                A simple dialog with free-form content.
-              </form>
-              <div slot="actions">
-                <md-text-button form="form-id">Ok</md-text-button>
-              </div>
-            </md-dialog>
+
           </div>
         </div>
         <div class="fabs" ><md-fab aria-label="Edit" id="add">
@@ -143,7 +161,31 @@
     $(document).ready(function(){
       var currentTab = 0;
       var $tabs = $(".content");
-      
+      var transitionEndEvents = [
+        "webkitTransitionEnd",
+        "mozTransitionEnd",
+        "oTransitionEnd",
+        "transitionend"
+    ];
+    var transitionEnd = transitionEndEvents.join(" ");
+      const newflightdialog = document.getElementById('newflight');
+      const deletedialog = document.getElementById("delete");
+      let selectedCardID;//EditやDeleteボタンが押された際に使う変数
+      newflightdialog.addEventListener('cancel', event => event.preventDefault());
+      deletedialog.addEventListener("cancel", event => event.preventDefault());
+      deletedialog.addEventListener('close', () => {
+        if(deletedialog.returnValue === "delete"){
+          const card = $("#" + selectedCardID);
+          card.addClass("removing");
+          //$('#' + selectedCardID).addClass("removing");
+          //$('#' + selectedCardID).on("transitionEnd", function(){
+          //  $('#' + selectedCardID).remove();
+          //});
+         
+        };
+        const cancelClicked = dialog.returnValue === 'cancel';
+        const okClicked = dialog.returnValue === 'ok';
+      });
 
       $tabs.eq(currentTab).addClass("active");
       //anchorEl.addEventListener('click', () => { menuEl.open = !menuEl.open; });
@@ -229,19 +271,38 @@
         console.log(menuEl.attr("open"));
         menuEl.attr('open', menuEl.attr('open') === 'true' ? 'false' : 'true');
       });
-      $('#flightlist').on("click", "#edit", function(){
+
+      $('#flightlist').on("click", "#edit", function(){//Edit button
         console.log("edit");
         const cardDiv = $(this).closest('.card');
         const cardId = cardDiv.attr('id'); //
         console.log('Card ID:', cardId);
+        selectedCardID = cardId;
+
       });
+
+      $("#flightlist").on("click", "#delete", function(){
+        const cardDiv = $(this).closest('.card');
+        const cardId = cardDiv.attr('id'); //
+        selectedCardID = cardId;
+        deletedialog.show();
+
+      })
       //Delete
       $("md-fab").on("click",function () {
         console.log("add");
+        //const newflightdialog = document.getElementById('newflight');
+        newflightdialog.show();
+        //modal表示
+        //show add dialog
+        
         
       })
-
       
+
+
+
+
     });
 
 
