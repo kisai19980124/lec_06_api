@@ -176,7 +176,11 @@
       deletedialog.addEventListener('close', () => {
         if(deletedialog.returnValue === "delete"){
           const card = $("#" + selectedCardID);
-          card.addClass("removing");
+          card.remove();
+          //card.addClass("removing");
+          //card.on("transitionEnd", function(){
+          //  card.remove();
+          //})
           //$('#' + selectedCardID).addClass("removing");
           //$('#' + selectedCardID).on("transitionEnd", function(){
           //  $('#' + selectedCardID).remove();
@@ -186,6 +190,9 @@
         const cancelClicked = dialog.returnValue === 'cancel';
         const okClicked = dialog.returnValue === 'ok';
       });
+
+      
+
 
       $tabs.eq(currentTab).addClass("active");
       //anchorEl.addEventListener('click', () => { menuEl.open = !menuEl.open; });
@@ -209,7 +216,7 @@
         currentTab = newTab;
         
       };
-      function createCard(id, fromAirport, toAirport, fromDate, toDate) {
+      function createCard(id, fromAirport, fromAirportName, toAirport, toAirportName, fromDate, toDate, ratio) {
         return `
           <div class="card" style="padding: 12px;" id="${id}">
             <div class="cardwrapper">
@@ -217,19 +224,19 @@
                 <div class="airtoair">
                   <div class="threeletter">${fromAirport}</div>
                   <div class="interairportline">
-                    <md-linear-progress value="0.5" style="flex-grow: 1;"></md-linear-progress>
+                    <md-linear-progress value="${ratio}" style="flex-grow: 1;"></md-linear-progress>
                   </div>
                   <div class="threeletter">${toAirport}</div>
                 </div>
                 <div class="detailcontents">
                   <div class="airportdetail">
                     <div class="airportdate" style="margin: 0;">
-                      ${fromDate}
+                      ${fromAirportName} ${fromDate}
                     </div>
                   </div>
                   <div class="airportdetail">
                     <div class="airportdate" style="margin: 0;">
-                      ${toDate}
+                      ${toAirportName} ${toDate}
                     </div>
                   </div>
                 </div>
@@ -260,9 +267,31 @@
       //カードを作る
       //時間を計算
       //次のフライトはUpcomingに追加
-      const card1HTML = createCard("123","SYD", "HND", "シドニー 8月24日(金) 8:30", "羽田 8月24日(金) 17:30");
+      //試しに、database ID,dep,arrairport,depdes(from api ninja) + deptime,arrdes + arrtime0
+      //Amadeus api 追加後 carriercode, flight number, dateで
+      function dateformat(dateTZ,locale,timezone) {
+        return dateTZ.toLocaleString(locale,{
+        "timeZone": timezone,
+        "year": "numeric",
+        "month": "numeric",
+        "day": "numeric",
+        "weekday": "short",
+        "hour": "numeric",
+        "minute": "numeric"
+        })
+      }
+      const dtime1 = new Date("2024-08-25T08:15+10:00");
+      const dtime2 = new Date("2024-08-25T09:00Z");
+      const atime1 = new Date("2024-08-25T17:30+09:00");
+      const atime2 = new Date("2024-08-25T17:00Z");
+      const dtime1tz = dateformat(dtime1,"ja-JP","Australia/Sydney");
+      const dtime2tz = dateformat(dtime2,"ja-JP","Asia/Tokyo");
+      const atime1tz = dateformat(atime1,"ja-JP","America/Los_Angeles");
+      const atime2tz = dateformat(atime2,"ja-JP","America/New_York");
+
+      const card1HTML = createCard("123","SYD","シドニー", "HND","東京", dtime1tz, "8月24日(金) 17:30",0.37);
       $('#flightlist').append(card1HTML);
-      const card2HTML = createCard("456","LAX", "JFK", "ロサンゼルス 8月25日(土) 9:00", "ニューヨーク 8月25日(土) 17:00");
+      const card2HTML = createCard("456","LAX","ロサンゼルス", "JFK","ニューヨーク", "8月25日(土) 9:00", "8月25日(土) 17:00",0.99);
       $('#flightlist').append(card2HTML);
       $('#flightlist').on('click', '#usage-anchor', function() {
         
