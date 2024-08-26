@@ -393,3 +393,30 @@ body{
     color: var(--md-sys-color-error);
     border-color: var(--md-sys-color-error);
 }
+
+.newflightdialog{
+    min-width: calc(100vw - 212px);
+}
+
+.newflightdialog [slot="header"] {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.newflightdialog .headline{
+    flex: 1;
+}
+
+.newflight-content, .newflight-row{
+    display:flex;
+    gap: 8px;
+}
+
+.newflight-content {
+    flex-direction: column;
+}
+
+.newflight-row > * {
+    flex: 1;
+}

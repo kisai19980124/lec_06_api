@@ -26,13 +26,24 @@
 <!-- コンテンツ表示画面 -->
     <div class="modal" id="namesetting" style="display: none;">
     </div>
-    <md-dialog id="newflight">
-      <!--closingする際はしないようにしたい-->
-      <div slot="headline">
-        Dialog title
-      </div>
-      <form slot="content" id="form-id" method="dialog">
+    <md-dialog id="newflight" class="newflightdialog">
+      <span slot="headline">
+        <md-icon-button form="form" value="close" aria-label="Close dialog">
+          <md-icon>close</md-icon>
+        </md-icon-button>
+        <span class="headline">Add new flight</span>
+      </span>
+      <form slot="content" id="form-newflight" method="dialog" class="newflight-content">
         A simple dialog with free-form content.
+        <div class="newflight-row">
+          <md-filled-text-field 
+          autofocus label="Departure Airport (e.g. SYD)" id="newdep"></md-filled-text-field>
+          <md-filled-text-field label="Arrival Airport (e.g. HND)" id="newarr"></md-filled-text-field>
+        </div>
+        <div class="newflight-row">
+          <md-filled-text-field label="Departure Time" id="newdeptime"></md-filled-text-field>
+          <md-filled-text-field label="Arrival Time" id="newarrtime"></md-filled-text-field>
+        </div>
       </form>
       <div slot="actions">
         <md-text-button form="form-id">Ok</md-text-button>
@@ -124,7 +135,7 @@
               <div class="flightstatus onschedule">定刻</div>
             </div>
             <!-- Upcoming -->
-            <!-- ログインしてください画面 -->
+            
             <!-- Firebase Databaseから flights dataを取得-->
             <!-- 一番新しいものを-->
             <!-- Amadeusからフライト情報を取得-->
