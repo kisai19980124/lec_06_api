@@ -26,27 +26,31 @@
 <!-- コンテンツ表示画面 -->
     <div class="modal" id="namesetting" style="display: none;">
     </div>
+    <!-- New Flight Dialog -->
     <md-dialog id="newflight" class="newflightdialog">
       <span slot="headline">
-        <md-icon-button form="form" value="close" aria-label="Close dialog">
+        <md-icon-button form="form-newflight" value="close" aria-label="Close dialog">
           <md-icon>close</md-icon>
         </md-icon-button>
         <span class="headline">Add new flight</span>
       </span>
       <form slot="content" id="form-newflight" method="dialog" class="newflight-content">
-        A simple dialog with free-form content.
+        
         <div class="newflight-row">
-          <md-filled-text-field 
-          autofocus label="Departure Airport (e.g. SYD)" id="newdep"></md-filled-text-field>
-          <md-filled-text-field label="Arrival Airport (e.g. HND)" id="newarr"></md-filled-text-field>
+          <md-outlined-text-field 
+          autofocus label="Departure Airport" id="newdep" placeholder="SYD"></md-outlined-text-field>
+          <md-outlined-text-field label="Arrival Airport" id="newarr" placeholder="HND"></md-outlined-text-field>
         </div>
         <div class="newflight-row">
-          <md-filled-text-field label="Departure Time" id="newdeptime"></md-filled-text-field>
-          <md-filled-text-field label="Arrival Time" id="newarrtime"></md-filled-text-field>
+          <md-outlined-text-field label="Departure Time" id="newdeptime" placeholder="2024-08-24 8:00"></md-outlined-text-field>
+          <md-outlined-text-field label="Arrival Time" id="newarrtime" placeholder="2024-08-24 18:00"></md-outlined-text-field>
         </div>
       </form>
       <div slot="actions">
-        <md-text-button form="form-id">Ok</md-text-button>
+        <md-text-button form="form-newflight" value="reset" type="reset">Reset</md-text-button>
+        <div style="flex: 1"></div>
+        <md-text-button form="form-newflight" value="cancel">Cancel</md-text-button>
+        <md-text-button form="form-newflight" value="save">Save</md-text-button>
       </div>
     </md-dialog>
     
@@ -85,6 +89,7 @@
           
         
           <div class="content" id="upcoming">
+            <h1>未完成のためサンプルです</h1>
             <div class="card delayed">
               <div class="airtoair">
                 <div class="threeletter">SYD</div>
@@ -168,6 +173,31 @@
 <!-- JQuery -->
   <script type="module">
     //Firebase
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+    import { getDatabase,ref,  push, set, onChildAdded, remove, onChildRemoved,serverTimestamp } 
+    from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
+  
+    // Your web app's Firebase configuration
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyDCEfXZ8QPwg17YXZKo1bld-dY8wJ3Z2M4",
+      authDomain: "my-flight-schedule-75cb8.firebaseapp.com",
+      databaseURL: "https://my-flight-schedule-75cb8-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "my-flight-schedule-75cb8",
+      storageBucket: "my-flight-schedule-75cb8.appspot.com",
+      messagingSenderId: "343508594306",
+      appId: "1:343508594306:web:efc1a7c9be6a15d24e0e9b"
+    };
+
+    // Initialize Firebase
+    
+    const app = initializeApp(firebaseConfig);
+    
+    const db = getDatabase(app); //RealtimeDBに接続
+    const dbRef = ref(db,"flights"); //RT DB内の chat を使う
+    //以上Firebase
+
 
     $(document).ready(function(){
       var currentTab = 0;
@@ -183,28 +213,6 @@
       const newflightdialog = document.getElementById('newflight');
       const deletedialog = document.getElementById("delete");
       let selectedCardID;//EditやDeleteボタンが押された際に使う変数
-      newflightdialog.addEventListener('cancel', event => event.preventDefault());
-      deletedialog.addEventListener("cancel", event => event.preventDefault());
-      deletedialog.addEventListener('close', () => {
-        if(deletedialog.returnValue === "delete"){
-          const card = $("#" + selectedCardID);
-          card.remove();
-          //card.addClass("removing");
-          //card.on("transitionEnd", function(){
-          //  card.remove();
-          //})
-          //$('#' + selectedCardID).addClass("removing");
-          //$('#' + selectedCardID).on("transitionEnd", function(){
-          //  $('#' + selectedCardID).remove();
-          //});
-         
-        };
-        const cancelClicked = dialog.returnValue === 'cancel';
-        const okClicked = dialog.returnValue === 'ok';
-      });
-
-      
-
 
       $tabs.eq(currentTab).addClass("active");
       //anchorEl.addEventListener('click', () => { menuEl.open = !menuEl.open; });
@@ -259,7 +267,7 @@
                 </md-icon-button>
                 <md-menu id="usage-menu" anchor="usage-anchor">
                   <md-menu-item>
-                    <div slot="headline" id="edit">Edit</div>
+                    <div slot="headline" id="edit">Edit(工事中)</div>
                   </md-menu-item>
                   <md-menu-item>
                     <div slot="headline" id="delete">Delete</div>
@@ -276,10 +284,6 @@
         switchtab(newTab);
       })
       //Firebaseからデータ取得
-      //カードを作る
-      //時間を計算
-      //次のフライトはUpcomingに追加
-      //試しに、database ID,dep,arrairport,depdes(from api ninja) + deptime,arrdes + arrtime0
       //Amadeus api 追加後 carriercode, flight number, dateで
       function dateformat(dateTZ,locale,timezone) {
         return dateTZ.toLocaleString(locale,{
@@ -319,7 +323,9 @@
               
                 //console.log(result);[0].timezone
                 const card = document.getElementById(id);
+                //console.log(card);
                 const fromAirportDateDiv = card.querySelector('.airportdetail .airportdate:nth-child(1)');
+                
                 fromAirportDateDiv.textContent = result[0].city+`  `+dateformat(depdate,datelocale,result[0].timezone);
             },
             error: function ajaxError(jqXHR) {
@@ -346,20 +352,30 @@
       };
 
       function createCardAuto(id, fromAirport,  toAirport,  fromDate, toDate) {
-        const ratio = timeRatio(fromDate,toDate);
-        console.log(ratio);
-        const cardHTML = createCard(id,fromAirport, toAirport, fromDate, toDate,ratio);
-        $('#flightlist').append(cardHTML);
+        
+        if (id && fromAirport && toAirport && fromDate && toDate){
+          const msg = {
+            dep : fromAirport,
+            arr : toAirport,
+            dept : fromDate.valueOf(),
+            arrt : toDate.valueOf()
+          };
+          console.log(msg);
+          const newPostRef = push(dbRef);
+          set(newPostRef, msg);
+        }
+
+        //以下はonChildAdded移送
+        //const cardHTML = createCard(id,fromAirport, toAirport, fromDate, toDate,ratio);
+        //$('#flightlist').append(cardHTML);
         getAirportName(fromAirport,toAirport,fromDate, toDate,id);
       }
-      const dtime1 = new Date("2024-08-24T08:15+10:00");
-      const dtime2 = new Date("2024-08-24T09:00Z");
-      const atime1 = new Date("2024-08-24T17:30+09:00");
-      const atime2 = new Date("2024-08-28T17:00Z");
-
-      const card1HTML = createCardAuto("123","SYD", "HND", dtime1, atime1);
-
-      const card2HTML = createCardAuto("456","LAX", "JFK", dtime2, atime2);
+      //const dtime1 = new Date("2024-08-24T08:15+10:00");
+      //const dtime2 = new Date("2024-08-24T09:00Z");
+      //const atime1 = new Date("2024-08-24T17:30+09:00");
+      //const atime2 = new Date("2024-08-28T17:00Z");
+      //createCardAuto("123","SYD", "HND", dtime1, atime1);
+      //createCardAuto("456","LAX", "JFK", dtime2, atime2);
       $('#flightlist').on('click', '#usage-anchor', function() {
         
         const anchorEl = $(this);
@@ -387,14 +403,53 @@
       //Delete
       $("md-fab").on("click",function () {
         console.log("add");
-        //const newflightdialog = document.getElementById('newflight');
         newflightdialog.show();
-        //modal表示
-        //show add dialog
-        
-        
       })
-      
+
+      newflightdialog.addEventListener('cancel', event => event.preventDefault());
+      newflightdialog.addEventListener('close', () => {
+        if(newflightdialog.returnValue === "save"){
+          const newflightdep = document.forms['form-newflight'].elements['newdep'].value;
+          const newflightarr = document.forms['form-newflight'].elements['newarr'].value;
+          const newflightdept = new Date(document.forms['form-newflight'].elements['newdeptime'].value);
+          const newflightarrt = new Date(document.forms['form-newflight'].elements['newarrtime'].value);
+          createCardAuto(Math.trunc(Math.random()*1000000000),newflightdep, newflightarr, newflightdept, newflightarrt);
+        }
+      });
+      deletedialog.addEventListener("cancel", event => event.preventDefault());
+      deletedialog.addEventListener('close', () => {
+        if(deletedialog.returnValue === "delete"){
+          const card = $("#" + selectedCardID);
+          card.remove();
+          //card.addClass("removing");
+          //card.on("transitionEnd", function(){
+          //  card.remove();
+          //})
+          //$('#' + selectedCardID).addClass("removing");
+          //$('#' + selectedCardID).on("transitionEnd", function(){
+          //  $('#' + selectedCardID).remove();
+          //});
+         
+        };
+        const cancelClicked = dialog.returnValue === 'cancel';
+        const okClicked = dialog.returnValue === 'ok';
+      });
+
+
+    onChildAdded(dbRef, function(data){
+      const msg = data.val();
+      const key = data.key;
+      console.log(msg);
+      const id = key;
+      const fromAirport = msg.dep;
+      const toAirport = msg.arr;
+      const fromDate = new Date(msg.dept);
+      const toDate = new Date(msg.arrt);
+      const ratio = timeRatio(fromDate,toDate);
+      const cardHTML = createCard(id,fromAirport, toAirport, fromDate, toDate,ratio);
+      $('#flightlist').append(cardHTML);
+      getAirportName(fromAirport,toAirport,fromDate, toDate,id);
+    })
 
 
 

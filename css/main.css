@@ -395,7 +395,9 @@ body{
 }
 
 .newflightdialog{
-    min-width: calc(100vw - 212px);
+    min-width: 400px;
+    width: calc(100vw - 212px);
+    max-width: 768px;
 }
 
 .newflightdialog [slot="header"] {
