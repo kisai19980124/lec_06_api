@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <meta charset="UTF-8">
     <script type="importmap">
       {
         "imports": {
@@ -183,13 +184,13 @@
     // Your web app's Firebase configuration
     
     const firebaseConfig = {
-      apiKey: "AIzaSyDCEfXZ8QPwg17YXZKo1bld-dY8wJ3Z2M4",
-      authDomain: "my-flight-schedule-75cb8.firebaseapp.com",
-      databaseURL: "https://my-flight-schedule-75cb8-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "my-flight-schedule-75cb8",
-      storageBucket: "my-flight-schedule-75cb8.appspot.com",
-      messagingSenderId: "343508594306",
-      appId: "1:343508594306:web:efc1a7c9be6a15d24e0e9b"
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
     };
 
     // Initialize Firebase
@@ -319,13 +320,11 @@
           $.ajax({
             method: 'GET',
             url: 'https://api.api-ninjas.com/v1/airports?iata=' + depcode,
-            headers: { 'X-Api-Key': 'D1uSyF1ANEnDDKQzP5pyow==qAHoXzEkxy5rPcHU'},
+            headers: { 'X-Api-Key': ""},//api ninja key
             contentType: 'application/json',
             success: function(result) {
               
-                //console.log(result);[0].timezone
                 const card = document.getElementById(id);
-                //console.log(card);
                 const fromAirportDateDiv = card.querySelector('.airportdetail .airportdate:nth-child(1)');
                 
                 fromAirportDateDiv.textContent = result[0].city+`  `+dateformat(depdate,datelocale,result[0].timezone);
@@ -337,7 +336,7 @@
         $.ajax({
             method: 'GET',
             url: 'https://api.api-ninjas.com/v1/airports?iata=' + arrcode,
-            headers: { 'X-Api-Key': 'D1uSyF1ANEnDDKQzP5pyow==qAHoXzEkxy5rPcHU'},
+            headers: { 'X-Api-Key': ""},//api ninja key
             contentType: 'application/json',
             success: function(result) {
                 console.log(result[0].city);
@@ -367,17 +366,8 @@
           set(newPostRef, msg);
         }
 
-        //以下はonChildAdded移送
-        //const cardHTML = createCard(id,fromAirport, toAirport, fromDate, toDate,ratio);
-        //$('#flightlist').append(cardHTML);
-        getAirportName(fromAirport,toAirport,fromDate, toDate,id);
       }
-      //const dtime1 = new Date("2024-08-24T08:15+10:00");
-      //const dtime2 = new Date("2024-08-24T09:00Z");
-      //const atime1 = new Date("2024-08-24T17:30+09:00");
-      //const atime2 = new Date("2024-08-28T17:00Z");
-      //createCardAuto("123","SYD", "HND", dtime1, atime1);
-      //createCardAuto("456","LAX", "JFK", dtime2, atime2);
+
       $('#flightlist').on('click', '#usage-anchor', function() {
         
         const anchorEl = $(this);
@@ -386,7 +376,7 @@
         menuEl.attr('open', menuEl.attr('open') === 'true' ? 'false' : 'true');
       });
 
-      $('#flightlist').on("click", "#edit", function(){//Edit button
+      $('#flightlist').on("click", "#edit", function(){
         console.log("edit");
         const cardDiv = $(this).closest('.card');
         const cardId = cardDiv.attr('id'); //
@@ -423,14 +413,7 @@
         if(deletedialog.returnValue === "delete"){
           const card = $("#" + selectedCardID);
           card.remove();
-          //card.addClass("removing");
-          //card.on("transitionEnd", function(){
-          //  card.remove();
-          //})
-          //$('#' + selectedCardID).addClass("removing");
-          //$('#' + selectedCardID).on("transitionEnd", function(){
-          //  $('#' + selectedCardID).remove();
-          //});
+
          
         };
         const cancelClicked = dialog.returnValue === 'cancel';
