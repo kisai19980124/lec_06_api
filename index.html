@@ -167,7 +167,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <!-- JQuery -->
   <script type="module">
-
+    //Firebase
 
     $(document).ready(function(){
       var currentTab = 0;
@@ -178,6 +178,7 @@
         "oTransitionEnd",
         "transitionend"
     ];
+    
     var transitionEnd = transitionEndEvents.join(" ");
       const newflightdialog = document.getElementById('newflight');
       const deletedialog = document.getElementById("delete");
@@ -227,7 +228,7 @@
         currentTab = newTab;
         
       };
-      function createCard(id, fromAirport, fromAirportName, toAirport, toAirportName, fromDate, toDate, ratio) {
+      function createCard(id, fromAirport,  toAirport,  fromDate, toDate, ratio) {
         return `
           <div class="card" style="padding: 12px;" id="${id}">
             <div class="cardwrapper">
@@ -242,12 +243,12 @@
                 <div class="detailcontents">
                   <div class="airportdetail">
                     <div class="airportdate" style="margin: 0;">
-                      ${fromAirportName} ${fromDate}
+                       ${fromDate}
                     </div>
                   </div>
                   <div class="airportdetail">
                     <div class="airportdate" style="margin: 0;">
-                      ${toAirportName} ${toDate}
+                       ${toDate}
                     </div>
                   </div>
                 </div>
@@ -291,19 +292,74 @@
         "minute": "numeric"
         })
       }
-      const dtime1 = new Date("2024-08-25T08:15+10:00");
-      const dtime2 = new Date("2024-08-25T09:00Z");
-      const atime1 = new Date("2024-08-25T17:30+09:00");
-      const atime2 = new Date("2024-08-25T17:00Z");
-      const dtime1tz = dateformat(dtime1,"ja-JP","Australia/Sydney");
-      const dtime2tz = dateformat(dtime2,"ja-JP","Asia/Tokyo");
-      const atime1tz = dateformat(atime1,"ja-JP","America/Los_Angeles");
-      const atime2tz = dateformat(atime2,"ja-JP","America/New_York");
 
-      const card1HTML = createCard("123","SYD","シドニー", "HND","東京", dtime1tz, "8月24日(金) 17:30",0.37);
-      $('#flightlist').append(card1HTML);
-      const card2HTML = createCard("456","LAX","ロサンゼルス", "JFK","ニューヨーク", "8月25日(土) 9:00", "8月25日(土) 17:00",0.99);
-      $('#flightlist').append(card2HTML);
+      function timeRatio(dtime,atime) {
+        const nowtime = Date.now();
+        if (nowtime>=atime) {
+          console.log(nowtime+atime);
+          return 1;
+        } else
+        if (nowtime <= dtime){
+          console.log(nowtime+dtime);
+          return 0;
+        } else{
+          return (atime-nowtime)/(atime-dtime);
+        }
+      }
+
+      function getAirportName(depcode, arrcode, depdate,arrdate, id ) {
+        console.log(id);
+        const datelocale = "en-US"
+          $.ajax({
+            method: 'GET',
+            url: 'https://api.api-ninjas.com/v1/airports?iata=' + depcode,
+            headers: { 'X-Api-Key': 'D1uSyF1ANEnDDKQzP5pyow==qAHoXzEkxy5rPcHU'},
+            contentType: 'application/json',
+            success: function(result) {
+              
+                //console.log(result);[0].timezone
+                const card = document.getElementById(id);
+                const fromAirportDateDiv = card.querySelector('.airportdetail .airportdate:nth-child(1)');
+                fromAirportDateDiv.textContent = result[0].city+`  `+dateformat(depdate,datelocale,result[0].timezone);
+            },
+            error: function ajaxError(jqXHR) {
+                console.error('Error: ', jqXHR.responseText);
+            }
+        });
+        $.ajax({
+            method: 'GET',
+            url: 'https://api.api-ninjas.com/v1/airports?iata=' + arrcode,
+            headers: { 'X-Api-Key': 'D1uSyF1ANEnDDKQzP5pyow==qAHoXzEkxy5rPcHU'},
+            contentType: 'application/json',
+            success: function(result) {
+                console.log(result[0].city);
+                const card = document.getElementById(id);
+                const toAirportDateDiv = card.querySelector('.airportdetail:nth-child(2) .airportdate:nth-child(1)');
+                toAirportDateDiv.textContent = result[0].city+`  `+dateformat(arrdate,datelocale,result[0].timezone);
+            },
+            error: function ajaxError(jqXHR) {
+                console.error('Error: ', jqXHR.responseText);
+            }
+        });
+        
+        
+      };
+
+      function createCardAuto(id, fromAirport,  toAirport,  fromDate, toDate) {
+        const ratio = timeRatio(fromDate,toDate);
+        console.log(ratio);
+        const cardHTML = createCard(id,fromAirport, toAirport, fromDate, toDate,ratio);
+        $('#flightlist').append(cardHTML);
+        getAirportName(fromAirport,toAirport,fromDate, toDate,id);
+      }
+      const dtime1 = new Date("2024-08-24T08:15+10:00");
+      const dtime2 = new Date("2024-08-24T09:00Z");
+      const atime1 = new Date("2024-08-24T17:30+09:00");
+      const atime2 = new Date("2024-08-28T17:00Z");
+
+      const card1HTML = createCardAuto("123","SYD", "HND", dtime1, atime1);
+
+      const card2HTML = createCardAuto("456","LAX", "JFK", dtime2, atime2);
       $('#flightlist').on('click', '#usage-anchor', function() {
         
         const anchorEl = $(this);
